@@ -1,6 +1,6 @@
 # mcp-physics-bridge: Architectural Design Document
 
-**Description:** An engine-agnostic [Model Context Protocol](https://github.com/modelcontextprotocol) middleware server that safely bridges probabilistic AI reasoning with deterministic 60 FPS game physics via [gRPC](https://grpc.io/), [WebAssembly (Wasm)](https://webassembly.org/), and Struct of Arrays (SoA).
+**Description:** Teach AI to play by the rules of physics. An open [Model Context Protocol](https://github.com/modelcontextprotocol) bridge that connects AI agents to any game engine at a smooth 60 FPS—safely, reliably, and without breaking gameplay. Help us build the foundation for living, AI-powered game worlds!
 
 **Topics:** `model-context-protocol` `mcp` `game-engine` `grpc` `webassembly` `wasm` `ai-agents` `ecs` `physics`
 

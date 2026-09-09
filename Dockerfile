@@ -1,7 +1,7 @@
 # ==============================================================================
 # Stage 1: Build & Compilation Stage
 # ==============================================================================
-FROM node:20-bookworm-slim AS builder
+FROM node:22-bookworm-slim AS builder
 
 WORKDIR /app
 
@@ -25,7 +25,7 @@ RUN npm run build
 # ==============================================================================
 # Stage 2: Minimal Production Runtime Stage
 # ==============================================================================
-FROM node:20-bookworm-slim AS runner
+FROM node:22-bookworm-slim AS runner
 
 ENV NODE_ENV=production
 

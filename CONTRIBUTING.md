@@ -13,7 +13,7 @@ We are committed to providing a welcoming, inclusive, and harassment-free experi
 ## Development Environment Setup
 
 ### Prerequisites
-- **Node.js**: `v20.x` or higher
+- **Node.js**: `v22.x` or higher
 - **npm**: `v10.x` or higher
 - **Git**: Modern git client
 

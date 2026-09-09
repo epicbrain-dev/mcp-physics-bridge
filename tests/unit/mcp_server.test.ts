@@ -18,6 +18,7 @@ describe("MCPPhysicsBridgeServer (Model Context Protocol SDK Integration)", () =
     ...defaultConfig,
     sqliteVectorPath: ":memory:",
     byokLlmProvider: "mock",
+    wasmExecutionTimeoutMs: 500,
   };
 
   beforeAll(async () => {
