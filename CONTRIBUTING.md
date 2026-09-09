@@ -19,7 +19,7 @@ We are committed to providing a welcoming, inclusive, and harassment-free experi
 
 ### Clone & Install
 ```bash
-git clone https://github.com/agentic-labs/mcp-physics-bridge.git
+git clone https://github.com/epicbrain-dev/mcp-physics-bridge.git
 cd mcp-physics-bridge
 npm install
 ```

@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-blue.svg" alt="License" /></a>
-  <a href="https://github.com/agentic-labs/mcp-physics-bridge/actions/workflows/ci.yml"><img src="https://img.shields.io/badge/CI-passing-brightgreen.svg" alt="CI Pipeline" /></a>
+  <a href="https://github.com/epicbrain-dev/mcp-physics-bridge/actions/workflows/ci.yml"><img src="https://img.shields.io/badge/CI-passing-brightgreen.svg" alt="CI Pipeline" /></a>
   <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/node-%3E%3D20.0.0-brightgreen.svg" alt="Node Version" /></a>
   <a href="https://modelcontextprotocol.io"><img src="https://img.shields.io/badge/MCP-1.6.1-orange.svg" alt="Model Context Protocol" /></a>
   <a href="./tests"><img src="https://img.shields.io/badge/coverage-%3E92%25-success.svg" alt="Test Coverage" /></a>
@@ -350,5 +350,5 @@ npm run verify
 - **[License](./LICENSE):** Licensed under the Apache License, Version 2.0.
 
 <p align="center">
-  <sub>Built with ❤️ by the Agentic Labs team for game developers and AI researchers.</sub>
+  <sub>Built with ❤️ by epicbrain-dev for game developers and AI researchers.</sub>
 </p>

@@ -45,13 +45,13 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/agentic-labs/mcp-physics-bridge.git"
+    "url": "https://github.com/epicbrain-dev/mcp-physics-bridge.git"
   },
-  "homepage": "https://github.com/agentic-labs/mcp-physics-bridge#readme",
+  "homepage": "https://github.com/epicbrain-dev/mcp-physics-bridge#readme",
   "bugs": {
-    "url": "https://github.com/agentic-labs/mcp-physics-bridge/issues"
+    "url": "https://github.com/epicbrain-dev/mcp-physics-bridge/issues"
   },
-  "author": "Agentic Labs <engineering@agenticlabs.dev>",
+  "author": "epicbrain-dev <truthsbetterleftsaid@gmail.com>",
   "license": "Apache-2.0",
   "dependencies": {
     "@grpc/grpc-js": "^1.10.8",
