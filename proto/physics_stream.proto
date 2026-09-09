@@ -1,0 +1,94 @@
+syntax = "proto3";
+
+package mcp.physics;
+
+enum EngineMode {
+  PLAYTEST = 0;
+  DEBUG = 1;
+}
+
+enum PhysicsStatusCode {
+  STATUS_OK = 0;
+  STATUS_SOFT_CLAMPED = 1;
+  STATUS_TIME_DILATED = 2;
+  STATUS_VFX_SNAP_TRIGGERED = 3;
+  STATUS_HARD_REJECTED = 4;
+  STATUS_NAN_DETECTED = 5;
+  STATUS_OOB_DETECTED = 6;
+}
+
+// Error status bitmask for fine-grained per-entity and per-frame error tracking
+enum PhysicsErrorBitmask {
+  ERROR_NONE = 0;
+  ERROR_NAN_OR_INF = 1;           // 1 << 0: Floating point NaN or Inf detected
+  ERROR_OUT_OF_BOUNDS = 2;        // 1 << 1: Position outside allowable world bounds
+  ERROR_LINEAR_VEL_EXCEEDED = 4;  // 1 << 2: Linear speed exceeded playtest/debug limit
+  ERROR_ANGULAR_VEL_EXCEEDED = 8; // 1 << 3: Angular speed exceeded playtest/debug limit
+  ERROR_ROTATION_UNNORMALIZED = 16;// 1 << 4: Quaternion norm deviates from 1.0
+  ERROR_COLLISION_PENETRATION = 32;// 1 << 5: Intersphere/mesh collision penetration detected
+  ERROR_DIVERGENCE_SNAP = 64;     // 1 << 6: Divergence exceeded threshold triggering VFX snap
+  ERROR_TIME_DILATED = 128;       // 1 << 7: Micro time-dilation applied
+  ERROR_STRICT_REJECTED = 256;    // 1 << 8: Strict deterministic rejection enforced
+}
+
+// Struct of Arrays (SoA) layout for high-frequency 60 FPS physics state transmission
+message PhysicsFrameSoA {
+  uint64 frame_id = 1;
+  uint64 timestamp_ns = 2;
+  float delta_time = 3;
+  EngineMode mode = 4;
+
+  // Contiguous arrays for cache-friendly engine SIMD iteration
+  repeated uint32 entity_ids = 5;
+
+  // Position components
+  repeated float pos_x = 6;
+  repeated float pos_y = 7;
+  repeated float pos_z = 8;
+
+  // Linear velocity components
+  repeated float vel_x = 9;
+  repeated float vel_y = 10;
+  repeated float vel_z = 11;
+
+  // Quaternion rotation components (x, y, z, w)
+  repeated float rot_x = 12;
+  repeated float rot_y = 13;
+  repeated float rot_z = 14;
+  repeated float rot_w = 15;
+
+  // Angular velocity components (rad/s)
+  repeated float ang_vel_x = 16;
+  repeated float ang_vel_y = 17;
+  repeated float ang_vel_z = 18;
+
+  // Per-entity bounding radius and mass for collision and dynamic threshold testing
+  repeated float radii = 19;
+  repeated float masses = 20;
+
+  // Hierarchical parent-child scene tree links (0 or 0xFFFFFFFF for root)
+  repeated uint32 parent_ids = 21;
+}
+
+message PhysicsValidationResponse {
+  uint64 frame_id = 1;
+  PhysicsStatusCode status_code = 2;
+  string error_message = 3;
+
+  // In Playtest Mode: Soft clamped or smoothed values if corrections are applied
+  PhysicsFrameSoA corrected_frame = 4;
+
+  // In Debug Mode: Mask of failing entity IDs synchronized with the failing frame
+  repeated uint32 failing_entity_ids = 5;
+
+  // Aggregate frame-level error status bitmask
+  uint32 frame_error_bitmask = 6;
+
+  // Per-entity error bitmasks aligned 1:1 with failing_entity_ids
+  repeated uint32 entity_error_bitmasks = 7;
+}
+
+service PhysicsStreamingService {
+  // Bi-directional stream for continuous 60 FPS physics loop
+  rpc StreamPhysics(stream PhysicsFrameSoA) returns (stream PhysicsValidationResponse);
+}

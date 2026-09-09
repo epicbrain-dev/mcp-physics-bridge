@@ -1,0 +1,16 @@
+node_modules
+npm-debug.log
+dist
+coverage
+tests
+data/*.sqlite
+data/*.sqlite-journal
+data/*.sqlite-wal
+data/.runtime_token
+.DS_Store
+.git
+.github
+.vscode
+.env
+.env.*
+*.log

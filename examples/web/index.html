@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>mcp-physics-bridge - 60 FPS Web Visualizer</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #0d1117;
+      color: #c9d1d9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+    header {
+      width: 100%;
+      max-width: 900px;
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    h1 { font-size: 1.4rem; color: #58a6ff; }
+    .badge {
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      background: #21262d;
+    }
+    .badge.connected { background: #238636; color: #ffffff; }
+    .badge.disconnected { background: #da3633; color: #ffffff; }
+    #controls {
+      width: 100%;
+      max-width: 900px;
+      margin-bottom: 12px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      background: #161b22;
+      padding: 12px;
+      border-radius: 6px;
+      border: 1px solid #30363d;
+    }
+    input {
+      background: #0d1117;
+      border: 1px solid #30363d;
+      color: #c9d1d9;
+      padding: 6px 10px;
+      border-radius: 4px;
+      flex: 1;
+    }
+    button {
+      background: #238636;
+      border: none;
+      color: white;
+      padding: 6px 14px;
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    button:hover { background: #2ea043; }
+    #canvas-container {
+      width: 100%;
+      max-width: 900px;
+      background: #010409;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      overflow: hidden;
+      position: relative;
+    }
+    canvas { display: block; width: 100%; height: 500px; }
+    #stats {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(13, 17, 23, 0.8);
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 0.85rem;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>mcp-physics-bridge 60 FPS Visualizer</h1>
+    <div id="status-badge" class="badge disconnected">Disconnected</div>
+  </header>
+
+  <div id="controls">
+    <label for="ws-url">WebSocket URL:</label>
+    <input id="ws-url" type="text" value="ws://localhost:8080" />
+    <label for="ws-token">Token (optional):</label>
+    <input id="ws-token" type="password" placeholder="data/.runtime_token secret" />
+    <button id="connect-btn" onclick="toggleConnection()">Connect</button>
+  </div>
+
+  <div id="canvas-container">
+    <canvas id="viewport"></canvas>
+    <div id="stats">FPS: 0 | Entities: 64 | Frame: 0</div>
+  </div>
+
+  <script src="demo.js"></script>
+</body>
+</html>

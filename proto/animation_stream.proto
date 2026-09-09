@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+package mcp.physics;
+
+enum GenreTemplate {
+  GENRE_GENERIC = 0;
+  GENRE_PLATFORMER = 1;
+  GENRE_FPS = 2;
+  GENRE_ACTION_RPG = 3;
+  GENRE_VEHICLE = 4;
+}
+
+// Animation layers for multi-track skeletal blending (e.g. UpperBody aim while LowerBody runs)
+enum AnimationLayer {
+  LAYER_FULL_BODY = 0;
+  LAYER_LOWER_BODY = 1;
+  LAYER_UPPER_BODY = 2;
+  LAYER_ADDITIVE = 3;
+}
+
+message AnimationIntent {
+  string intent_name = 1; // e.g. "Walk", "Sprint", "Jump", "Attack", "Recoil", "Idle"
+  uint32 priority = 2;    // Priority value for Bridge-Side Arbitration
+  float desired_velocity = 3;
+  float intensity = 4;
+  AnimationLayer layer = 5;
+  repeated string priority_tags = 6; // e.g. ["locomotion", "combat", "hit_reaction"]
+  float blend_transition_duration = 7; // In seconds (e.g. 0.2s cross-fade)
+}
+
+message AnimationBlendWeight {
+  string clip_name = 1;
+  float weight = 2; // Frame-by-frame blend weight [0.0 - 1.0]
+}
+
+message SynthesizedAnimationState {
+  uint32 entity_id = 1;
+  uint64 frame_id = 2;
+  string active_intent = 3;
+  
+  // Opt-in weight streaming
+  repeated AnimationBlendWeight blend_weights = 4;
+
+  // Root Motion Physics Authority: procedural playback scaling multiplier
+  float playback_scale = 5;
+
+  bool arbitration_preempted = 6;
+  string preempted_reason = 7;
+
+  // Active layer for which this synthesis was evaluated
+  AnimationLayer layer = 8;
+}
+
+service AnimationSynthesisService {
+  rpc StreamAnimationWeights(stream AnimationIntent) returns (stream SynthesizedAnimationState);
+}

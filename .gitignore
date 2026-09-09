@@ -1,0 +1,14 @@
+node_modules/
+dist/
+build/
+*.wasm
+*.wat
+*.tsbuildinfo
+.DS_Store
+*.log
+.env
+.env.local
+coverage/
+*.sqlite
+*.sqlite-journal
+data/

@@ -1,0 +1,73 @@
+{
+  "name": "mcp-physics-bridge",
+  "version": "0.1.0",
+  "description": "Engine-agnostic MCP middleware server bridging probabilistic AI reasoning with deterministic 60 FPS game physics via gRPC, Wasm, and SoA",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "mcp-physics-bridge": "dist/bin/cli.js"
+  },
+  "files": [
+    "dist",
+    "proto",
+    "build/release.wasm",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "build:as": "asc src/sandbox/assemblyscript/index.ts --config asconfig.json",
+    "proto:generate": "proto-loader-gen-types --longs=BigInt --enums=Number --defaults --oneofs --grpcLib=@grpc/grpc-js --importFileExtension=.js --outDir=src/proto/generated/ proto/*.proto",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:bootstrap": "node --input-type=module -e \"import { PhysicsBridgeService } from './dist/index.js'; const s = new PhysicsBridgeService(); await s.bootstrap(); await s.shutdown();\"",
+    "test:wasm": "node --input-type=module -e \"import fs from 'fs'; const b = fs.readFileSync('./build/release.wasm'); const { instance } = await WebAssembly.instantiate(b, { env: { abort: () => {} } }); console.log('calculateVelocity:', instance.exports.calculateVelocity(0, 100, 10, 0.016)); console.log('clampVelocity:', instance.exports.clampVelocity(75, 50));\"",
+    "verify": "tsc -p tsconfig.json && node dist/manual_verification.js",
+    "typecheck": "tsc --noEmit",
+    "start": "node dist/index.js",
+    "start:prod": "NODE_ENV=production node dist/index.js",
+    "prepublishOnly": "npm run build:as && npm run build && npm test",
+    "docker:build": "docker build -t mcp-physics-bridge:latest .",
+    "docker:run": "docker run --rm -p 50051:50051 -p 50052:50052 -p 8080:8080 mcp-physics-bridge:latest"
+  },
+  "keywords": [
+    "model-context-protocol",
+    "mcp",
+    "game-engine",
+    "grpc",
+    "webassembly",
+    "wasm",
+    "ai-agents",
+    "ecs",
+    "physics"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/agentic-labs/mcp-physics-bridge.git"
+  },
+  "homepage": "https://github.com/agentic-labs/mcp-physics-bridge#readme",
+  "bugs": {
+    "url": "https://github.com/agentic-labs/mcp-physics-bridge/issues"
+  },
+  "author": "Agentic Labs <engineering@agenticlabs.dev>",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@grpc/grpc-js": "^1.10.8",
+    "@grpc/proto-loader": "^0.7.13",
+    "@modelcontextprotocol/sdk": "^1.6.1",
+    "assemblyscript": "^0.27.30",
+    "better-sqlite3": "^11.8.1",
+    "ws": "^8.18.0",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.12",
+    "@types/node": "^20.11.24",
+    "@types/ws": "^8.5.14",
+    "@vitest/coverage-v8": "^1.6.1",
+    "typescript": "^5.4.5",
+    "vitest": "^1.6.0"
+  }
+}

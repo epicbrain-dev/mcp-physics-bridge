@@ -1,0 +1,40 @@
+version: "3.8"
+
+services:
+  mcp-physics-bridge:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: mcp-physics-bridge:latest
+    container_name: mcp-physics-bridge
+    restart: unless-stopped
+    ports:
+      # Native Engine gRPC Streaming
+      - "50051:50051"
+      # Browser gRPC-Web Proxy & Metrics / Healthcheck
+      - "50052:50052"
+      # Web Physics WebSocket (60 FPS)
+      - "8080:8080"
+    environment:
+      - NODE_ENV=production
+      - MCP_PHYSICS_GRPC_PORT=50051
+      - MCP_PHYSICS_GRPC_WEB_PORT=50052
+      - MCP_PHYSICS_WS_PORT=8080
+      - MCP_PHYSICS_AUTHORITY_MODE=playtest
+      - MCP_PHYSICS_BYOK_PROVIDER=mock
+      # Set custom token or leave empty for auto-generated runtime token in data/.runtime_token
+      # - MCP_PHYSICS_WS_TOKEN=your-production-secret-token
+      # - MCP_PHYSICS_CORS_ORIGINS=http://localhost:3000,https://mygame.com
+    volumes:
+      # Persist SQLite vector memory and runtime secrets
+      - bridge-data:/app/data
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:50052/healthz').then(r => r.ok ? process.exit(0) : process.exit(1)).catch(() => process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+volumes:
+  bridge-data:
+    driver: local

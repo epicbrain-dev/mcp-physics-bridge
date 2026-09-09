@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+package mcp.physics;
+
+message AIHookRequest {
+  string hook_id = 1;
+  string event_name = 2;
+  uint32 target_entity_id = 3;
+  uint64 frame_id = 4;
+  string context_json = 5; // Hierarchical context translated from SoA
+}
+
+// Dual-Payload Delivery: human-readable source code + compiled bytecode
+message DualPayloadModule {
+  string module_id = 1;
+  string assemblyscript_source = 2;
+  bytes wasm_bytecode = 3;
+  string source_checksum = 4;
+  string compiler_version = 5;
+  string optimization_target = 6;
+}
+
+// Diagnostic trace containing performance profiling, resource bounds, and sandbox logs
+message DiagnosticTrace {
+  uint64 execution_time_ns = 1;       // Exact sandbox execution duration
+  uint64 compile_time_ns = 2;         // In-memory compiler pipeline duration
+  uint32 memory_bytes_used = 3;       // Memory consumed inside Wasm sandbox
+  uint64 instructions_executed = 4;   // Execution gas or instruction count
+  bool cache_hit = 5;                 // Whether module was retrieved from pre-warmed cache
+  uint32 sandbox_exit_code = 6;       // Sandbox exit code (0 = success)
+  repeated string console_logs = 7;   // Captured trace() output from AssemblyScript
+  string call_stack = 8;              // Stack trace on abort or runtime exception
+  string error_category = 9;          // Diagnostic category (e.g., TIMEOUT, MEMORY_OOB, MATH_DOMAIN)
+}
+
+message AIHookResponse {
+  string hook_id = 1;
+  bool success = 2;
+  string execution_result_json = 3;
+  DualPayloadModule deployed_module = 4;
+  string error_message = 5;
+  DiagnosticTrace diagnostic_trace = 6;
+}
+
+// Reflective Memory message carrying AST diffs, compressed errors, and diagnostic traces
+message ReflectiveMemoryReport {
+  string module_id = 1;
+  string ast_diff = 2;
+  string compressed_error_logs = 3;
+  uint64 failed_frame_id = 4;
+  DiagnosticTrace diagnostic_trace = 5;
+}
+
+service AIHookService {
+  // Sporadic AI event hook execution
+  rpc TriggerAIHook(AIHookRequest) returns (AIHookResponse);
+
+  // Deploy new AI-generated logic module via Dual-Payload Delivery
+  rpc DeployLogicModule(DualPayloadModule) returns (AIHookResponse);
+
+  // Report execution failure for reflective memory caching
+  rpc ReportReflectiveFailure(ReflectiveMemoryReport) returns (AIHookResponse);
+}
