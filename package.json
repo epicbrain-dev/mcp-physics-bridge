@@ -57,7 +57,7 @@
     "@grpc/grpc-js": "^1.10.8",
     "@grpc/proto-loader": "^0.7.13",
     "@modelcontextprotocol/sdk": "^1.6.1",
-    "assemblyscript": "^0.27.30",
+    "assemblyscript": "^0.28.20",
     "better-sqlite3": "^11.8.1",
     "ws": "^8.18.0",
     "zod": "^3.24.2"
