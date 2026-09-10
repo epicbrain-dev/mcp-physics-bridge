@@ -119,6 +119,18 @@ BUNDLED ASSEMBLYSCRIPT MATH LIBRARY (Import path: "./math/vector3" and "./math/q
 `.trim();
 
 /**
+ * Safely strips trailing slashes from a URL string without regular expressions
+ * to prevent polynomial ReDoS vulnerabilities on uncontrolled endpoint inputs.
+ */
+function stripTrailingSlashes(url: string): string {
+  let end = url.length;
+  while (end > 0 && url.charCodeAt(end - 1) === 47 /* '/' */) {
+    end--;
+  }
+  return url.slice(0, end);
+}
+
+/**
  * ByokLlmRouter routes LLM generation and reasoning requests according to the
  * Bring-Your-Own-Key (BYOK) architecture. Supports OpenAI-compatible endpoints,
  * Anthropic, Gemini, Ollama, custom providers, and deterministic offline mock mode.
@@ -542,7 +554,7 @@ On Ground: ${options?.onGround !== false}`,
 
     const url = endpoint.endsWith("/chat/completions")
       ? endpoint
-      : `${endpoint.replace(/\/+$/, "")}/chat/completions`;
+      : `${stripTrailingSlashes(endpoint)}/chat/completions`;
 
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
@@ -615,7 +627,7 @@ On Ground: ${options?.onGround !== false}`,
 
     const url = endpoint.endsWith("/messages")
       ? endpoint
-      : `${endpoint.replace(/\/+$/, "")}/messages`;
+      : `${stripTrailingSlashes(endpoint)}/messages`;
 
     // Extract system messages for Anthropic API
     const systemMessages = messages.filter((m) => m.role === "system");
