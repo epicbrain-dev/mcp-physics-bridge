@@ -60,7 +60,7 @@
     "assemblyscript": "^0.28.20",
     "better-sqlite3": "^11.8.1",
     "ws": "^8.18.0",
-    "zod": "^3.24.2"
+    "zod": "^4.5.4"
   },
   "engines": {
     "node": ">=22.0.0"
